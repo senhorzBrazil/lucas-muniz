@@ -185,6 +185,11 @@
   .chart .dl{font:800 12px 'Plus Jakarta Sans',Inter,sans-serif}
   .chart .marker{stroke:#fff;stroke-width:2}
   .chart .xh{stroke:#94a3b8;stroke-width:1;stroke-dasharray:2 3;opacity:0}
+  .chart .ph{stroke-width:2;stroke-linecap:round;opacity:0}
+  .chart .ph-dot{opacity:0}
+  .chart .late{opacity:0;transition:opacity .45s ease}
+  .chart.done .late{opacity:1}
+  .chart-stats b{font-variant-numeric:tabular-nums}
   .chart .hv{opacity:0}
   .tip{position:absolute;pointer-events:none;background:var(--ink-0);color:#fff;font-size:12.5px;font-weight:600;padding:8px 10px;border-radius:10px;white-space:nowrap;opacity:0;transform:translate(-50%,-115%);transition:opacity .12s;z-index:5}
   .tip b{display:block;font-size:11px;color:#9aa3cf;font-weight:600;margin-bottom:2px}
@@ -414,8 +419,8 @@
         <p class="chart-sub">Hook nos 3 primeiros segundos, corte a cada ideia, legenda e som no ritmo.</p>
         <div class="chart" data-chart="win" data-series="Editado para reter"></div>
         <div class="chart-stats">
-          <div><b class="up">78%</b><small>ainda assistindo aos 3s</small></div>
-          <div><b class="up">52%</b><small>chega ao fim</small></div>
+          <div><b class="up cnt" data-to="78" data-suf="%">0%</b><small>ainda assistindo aos 3s</small></div>
+          <div><b class="up cnt" data-to="52" data-suf="%">0%</b><small>chega ao fim</small></div>
           <div><b class="up">Alto</b><small>alcance para não seguidores</small></div>
         </div>
       </div>
@@ -429,8 +434,8 @@
         <p class="chart-sub">Começo lento, sem legenda, áudio cru e o ponto principal só aparece no final.</p>
         <div class="chart" data-chart="lose" data-series="Sem tratamento"></div>
         <div class="chart-stats">
-          <div><b class="dn">31%</b><small>ainda assistindo aos 3s</small></div>
-          <div><b class="dn">9%</b><small>chega ao fim</small></div>
+          <div><b class="dn cnt" data-to="31" data-suf="%">0%</b><small>ainda assistindo aos 3s</small></div>
+          <div><b class="dn cnt" data-to="9" data-suf="%">0%</b><small>chega ao fim</small></div>
           <div><b class="dn">Baixo</b><small>alcance para não seguidores</small></div>
         </div>
       </div>
@@ -648,15 +653,24 @@
     var ax=sx(c.ann.x), ay=sy(c.pts[c.ann.x]);
     s+='<line class="ann-l" x1="'+ax+'" x2="'+ax+'" y1="'+PT+'" y2="'+sy(0)+'"/>';
     s+='<text class="ann" x="'+(ax+8)+'" y="'+(PT+4)+'">3s decisivos</text>';
-    // area + line
+    // area + line (revelados pelo clip durante a animação)
+    var cid='clip-'+key;
+    s+='<defs><clipPath id="'+cid+'"><rect class="clip" x="'+PL+'" y="0" width="0" height="'+H+'"/></clipPath></defs>';
+    s+='<g clip-path="url(#'+cid+')">';
     s+='<path class="area" d="'+area+'" fill="'+c.color+'"/>';
     s+='<path class="line" d="'+d+'" stroke="'+c.color+'"/>';
-    // direct label at end
+    s+='</g>';
+    // playhead (cursor de reprodução)
+    s+='<line class="ph" x1="'+PL+'" x2="'+PL+'" y1="'+PT+'" y2="'+sy(0)+'" stroke="'+c.color+'"/>';
+    s+='<circle class="ph-dot marker" cx="'+PL+'" cy="'+sy(100)+'" r="6" fill="'+c.color+'"/>';
+    // direct labels (aparecem depois do desenho)
     var lx=pts[N-1][0], ly=pts[N-1][1];
+    s+='<g class="late">';
     s+='<circle class="marker" cx="'+ax+'" cy="'+ay+'" r="5" fill="'+c.color+'"/>';
     s+='<text class="dl" x="'+(ax+10)+'" y="'+(ay-10)+'" fill="'+c.color+'">'+c.pts[c.ann.x]+'%</text>';
     s+='<circle class="marker" cx="'+lx+'" cy="'+ly+'" r="5" fill="'+c.color+'"/>';
     s+='<text class="dl" x="'+(lx-8)+'" y="'+(ly-12)+'" text-anchor="end" fill="'+c.color+'">'+c.pts[N-1]+'% no fim</text>';
+    s+='</g>';
     // hover layer
     s+='<line class="xh" x1="0" x2="0" y1="'+PT+'" y2="'+sy(0)+'"/>';
     s+='<circle class="hv marker" r="6" fill="'+c.color+'"/>';
@@ -679,8 +693,59 @@
     hit.addEventListener('touchstart',function(e){ move(e.touches[0]); },{passive:true});
     hit.addEventListener('touchmove',function(e){ move(e.touches[0]); },{passive:true});
     hit.addEventListener('touchend',leave);
+
+    /* Animação: a curva se desenha como se o vídeo estivesse tocando */
+    var clip=el.querySelector('.clip'), ph=el.querySelector('.ph'), phd=el.querySelector('.ph-dot');
+    var reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    function yAt(x){ // interpola a curva no x atual
+      var f=(x-PL)/iw*(N-1), i=Math.floor(f), t=f-i; if(i>=N-1) return sy(c.pts[N-1]);
+      return sy(c.pts[i]+(c.pts[i+1]-c.pts[i])*t);
+    }
+    el.play=function(){
+      if(el.classList.contains('done')) return;
+      if(reduce){ clip.setAttribute('width',iw+2); el.classList.add('done'); return; }
+      var dur=2200, t0=null;
+      ph.style.opacity=1; phd.style.opacity=1;
+      function frame(ts){
+        if(!t0) t0=ts;
+        var p=Math.min(1,(ts-t0)/dur);
+        var e=1-Math.pow(1-p,2.2); // ease-out
+        var x=PL+e*iw;
+        clip.setAttribute('width',e*iw+2);
+        ph.setAttribute('x1',x); ph.setAttribute('x2',x);
+        phd.setAttribute('cx',x); phd.setAttribute('cy',yAt(x));
+        if(p<1) requestAnimationFrame(frame);
+        else { ph.style.opacity=0; phd.style.opacity=0; el.classList.add('done'); }
+      }
+      requestAnimationFrame(frame);
+    };
   }
   document.querySelectorAll('[data-chart]').forEach(buildChart);
+
+  /* Contadores dos números abaixo dos gráficos */
+  function countUp(b){
+    var to=+b.getAttribute('data-to'), suf=b.getAttribute('data-suf')||'', dur=2200, t0=null;
+    if(window.matchMedia('(prefers-reduced-motion: reduce)').matches){ b.textContent=to+suf; return; }
+    function f(ts){ if(!t0) t0=ts; var p=Math.min(1,(ts-t0)/dur), e=1-Math.pow(1-p,2.2);
+      b.textContent=Math.round(to*e)+suf; if(p<1) requestAnimationFrame(f); }
+    requestAnimationFrame(f);
+  }
+
+  /* Dispara os dois gráficos juntos quando a seção entra na tela */
+  var cmpSec=document.querySelector('.cmp');
+  if(cmpSec){
+    var cio=new IntersectionObserver(function(es){
+      es.forEach(function(e){
+        if(!e.isIntersecting) return;
+        cio.disconnect();
+        setTimeout(function(){
+          document.querySelectorAll('[data-chart]').forEach(function(ch){ ch.play(); });
+          document.querySelectorAll('.cnt').forEach(countUp);
+        },250);
+      });
+    },{threshold:.35});
+    cio.observe(cmpSec);
+  }
 </script>
 </body>
 </html>
