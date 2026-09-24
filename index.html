@@ -18,6 +18,7 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://i.ytimg.com">
 <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap">
 <link rel="stylesheet" media="print" onload="this.media='all'" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap">
 <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap"></noscript>
@@ -79,6 +80,9 @@
   .btn-outline{background:transparent;color:#fff;border:1.5px solid rgba(255,255,255,.35)}
   .btn-outline:hover{background:rgba(255,255,255,.1);border-color:#fff;transform:translateY(-2px)}
   .btn-ghost{background:#fff;color:var(--ink-0);border:1.5px solid var(--line)}
+  .btn-primary{background:var(--violet);color:#fff;box-shadow:0 16px 34px -12px rgba(109,74,255,.7)}
+  .btn-primary svg{fill:#fff}
+  .btn-primary:hover{transform:translateY(-2px);background:#7d5bff;box-shadow:0 22px 40px -12px rgba(109,74,255,.85)}
   .btn-ghost:hover{border-color:var(--violet);color:var(--violet);transform:translateY(-2px)}
   .btn-lg{font-size:17px;padding:19px 36px}
   @media(max-width:640px){
@@ -238,6 +242,12 @@
   .p-card h3{font-size:17px;color:#fff}
   .p-card p{font-size:13px;color:#c3c8e6;margin-top:4px}
   .p-card video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.7}
+  .p-card img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform .5s ease}
+  .p-card:hover img{transform:scale(1.05)}
+  .p-card::before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(11,13,26,.05) 38%,rgba(11,13,26,.88) 100%);z-index:1}
+  .p-card .play,.p-card .cat,.p-card h3,.p-card p{position:relative;z-index:2}
+  .p-card .play{z-index:2;transition:background .18s,transform .18s}
+  .p-card:hover .play{background:rgba(109,74,255,.9);transform:translate(-50%,-50%) scale(1.06)}
   @media(max-width:900px){.port{grid-template-columns:1fr 1fr}}
   @media(max-width:560px){.port{grid-template-columns:1fr}.p-card{aspect-ratio:4/5}}
 
@@ -300,7 +310,7 @@
     <nav class="nav-links" aria-label="Seções">
       <a href="#para-quem">Para quem</a>
       <a href="#comparativo">Viral × não viral</a>
-      <a href="#portfolio">Portfólio</a>
+      <a href="/portfolio/">Portfólio</a>
       <a href="#como-funciona">Como funciona</a>
       <a href="#sobre">Sobre</a>
     </nav>
@@ -491,19 +501,20 @@
     <div class="center rv">
       <span class="eyebrow">Portfólio</span>
       <h2>Alguns trabalhos recentes</h2>
-      <p class="lead center">Reels, VSL, criativos de anúncio e motion. Peça o portfólio completo no WhatsApp.</p>
+      <p class="lead center">Reels, motion graphics e vídeos longos. Clique para assistir — ou veja a lista completa na página de portfólio.</p>
     </div>
     <div class="port">
-      <!-- Troque href pelo link do vídeo (Instagram, YouTube ou Drive). Para prévia em loop, adicione <video src="..." muted loop autoplay playsinline></video> dentro do card. -->
-      <a class="p-card rv" href="#" target="_blank" rel="noopener"><span class="play"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></span><span class="cat">Reels</span><h3>Médico · saúde</h3><p>Corte dinâmico, legenda e hook</p></a>
-      <a class="p-card rv" href="#" target="_blank" rel="noopener"><span class="play"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></span><span class="cat">Reels</span><h3>Advogado · direito</h3><p>Conteúdo técnico em 40 segundos</p></a>
-      <a class="p-card rv" href="#" target="_blank" rel="noopener"><span class="play"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></span><span class="cat">VSL</span><h3>Vídeo de vendas</h3><p>Narrativa, ritmo e retenção</p></a>
-      <a class="p-card rv" href="#" target="_blank" rel="noopener"><span class="play"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></span><span class="cat">Ads</span><h3>Criativo para tráfego</h3><p>Variações para teste de anúncio</p></a>
-      <a class="p-card rv" href="#" target="_blank" rel="noopener"><span class="play"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></span><span class="cat">Motion</span><h3>Motion graphics</h3><p>Animação de dados e conceitos</p></a>
-      <a class="p-card rv" href="#" target="_blank" rel="noopener"><span class="play"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></span><span class="cat">YouTube</span><h3>Vídeo longo</h3><p>Retenção em conteúdo de 10 min+</p></a>
+      <!-- Destaques. O portfólio completo fica em /portfolio/ (edite a lista VIDEOS naquele arquivo). -->
+      <a class="p-card rv" href="https://youtu.be/_axcrK-u-dw" target="_blank" rel="noopener"><img src="https://i.ytimg.com/vi/_axcrK-u-dw/oardefault.jpg" alt="Capa do vídeo Making of · Yana Reis" loading="lazy"><span class="play"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></span><span class="cat">Reels</span><h3>Making of · Yana Reis</h3><p>Bastidores em corte vertical</p></a>
+      <a class="p-card rv" href="https://youtu.be/lpd6M9U4G3g" target="_blank" rel="noopener"><img src="https://i.ytimg.com/vi/lpd6M9U4G3g/oardefault.jpg" alt="Capa do vídeo Athenais" loading="lazy"><span class="play"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></span><span class="cat">Reels</span><h3>Athenais</h3><p>Peça vertical para redes sociais</p></a>
+      <a class="p-card rv" href="https://youtu.be/0zVcZc8Ybs0" target="_blank" rel="noopener"><img src="https://i.ytimg.com/vi/0zVcZc8Ybs0/oardefault.jpg" alt="Capa do vídeo Reels em espanhol" loading="lazy"><span class="play"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></span><span class="cat">Reels</span><h3>Reels em espanhol</h3><p>Legenda e ritmo em outro idioma</p></a>
+      <a class="p-card rv" href="https://youtu.be/YKDuCM1dTQk" target="_blank" rel="noopener"><img src="https://i.ytimg.com/vi/YKDuCM1dTQk/oardefault.jpg" alt="Capa do vídeo Motion · Spotify" loading="lazy"><span class="play"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></span><span class="cat">Motion</span><h3>Motion · Spotify</h3><p>Animação de interface e transições</p></a>
+      <a class="p-card rv" href="https://youtu.be/O48MwKglcHA" target="_blank" rel="noopener"><img src="https://i.ytimg.com/vi/O48MwKglcHA/oardefault.jpg" alt="Capa do vídeo Criativo · Autoescola Aquino" loading="lazy"><span class="play"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></span><span class="cat">Motion</span><h3>Criativo · Autoescola Aquino</h3><p>Motion graphics para anúncio</p></a>
+      <a class="p-card rv" href="https://youtu.be/ql5rogYtrdg" target="_blank" rel="noopener"><img src="https://i.ytimg.com/vi/ql5rogYtrdg/maxresdefault.jpg" alt="Capa do vídeo A verdade proibida sobre a BlackRock" loading="lazy"><span class="play"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></span><span class="cat">YouTube</span><h3>A verdade proibida sobre a BlackRock</h3><p>Vídeo longo com narrativa e retenção</p></a>
     </div>
-    <div class="center" style="margin-top:28px">
-      <a class="btn btn-ghost" data-wa data-msg="Oi Lucas, quero ver o portfólio completo." href="#">Pedir o portfólio completo</a>
+    <div class="center" style="margin-top:28px;display:flex;flex-wrap:wrap;gap:12px;justify-content:center">
+      <a class="btn btn-primary" href="/portfolio/">Ver portfólio completo · 23 vídeos</a>
+      <a class="btn btn-ghost" data-wa data-msg="Oi Lucas, quero ver mais trabalhos seus." href="#">Falar no WhatsApp</a>
     </div>
   </div>
 </section>
