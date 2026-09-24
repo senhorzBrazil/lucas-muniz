@@ -1,0 +1,6 @@
+{
+  "redirects": [
+    { "source": "/portfolio", "destination": "/#portfolio", "permanent": true },
+    { "source": "/portfolio/", "destination": "/#portfolio", "permanent": true }
+  ]
+}
